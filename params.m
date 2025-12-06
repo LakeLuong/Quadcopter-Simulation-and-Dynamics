@@ -3,44 +3,55 @@ g       = 9.81;        % Gravity (m/s^2)
 rho_air = 1.21;        % Air density (kg/m^3)
 
 %% Mass Properties
-m  = 35.09 * 0.45359237;   % Mass (kg)
+m  = 0.75;   % Mass (kg)
 W  = m * g;                % Weight (N)
 
 % Thrust Requirements
-TWR = 2;                                
+TWR = 4;                                
 n_motors = 4;
 T_total_max = TWR * W;                  
 T_motor_max = T_total_max / n_motors;  
 
 %% Moments of Inertia (kg*m^2)
 
-Ix = 802.36   * 0.00029263965;
-Iy = 3525.65  * 0.00029263965;
-Iz = 4089.23  * 0.00029263965;
+Ix = 0.006;  
+Iy = 0.006;  
+Iz = 0.010;
 
 %% Inertial Tensor 
-Ixx = 15634.61 * 0.00029263965;
-Iyy = 16129.59 * 0.00029263965;
-Izz = 9980.22  * 0.00029263965;
-Ixy = 4587.10  * 0.00029263965;
-Ixz = -6031.16 * 0.00029263965;
-Iyz = -5963.06 * 0.00029263965;
+Ixx = Ix;
+Iyy = Iy;
+Izz = Iz;
+Ixy = 0;
+Ixz = 0;
+Iyz = 0;
 
 I_tensor = [ Ixx  -Ixy  -Ixz;
              -Ixy  Iyy  -Iyz;
              -Ixz -Iyz   Izz ];
 
 %% Arm Length
-L = 0.254;   % Arm length (m)
+L = 0.12;   % Arm length (m)
 
-%% Motor Directions
+%% Motor Direction
 motor_dir = [ +1, -1, +1, -1 ];   % +1 = CCW, -1 = CW
+
+%% Motor Mixing Matrix
+
+k_tau = 0.01;
+Lxy = L / sqrt(2);
+
+M = [ 1      1       1       1;          % total thrust
+      0    -Lxy    0    Lxy;        % roll   (tau_x)
+     Lxy    0    -Lxy    0;        % pitch  (tau_y)
+      k_tau -k_tau   k_tau  -k_tau ];    % yaw    (tau_z)
+
 
 %% Initial Orientation
 
-phi0   = 0;     % initial roll
-theta0 = 0;     % initial pitch
-psi0   = 0;     % initial yaw
+phi0   = 0.785398;     % initial roll
+theta0 = 0.7853985;     % initial pitch
+psi0   = 0.785398;     % initial yaw
 
 %% Initial Euler Angle Rates
 p0 = 0;   % initial roll rate
